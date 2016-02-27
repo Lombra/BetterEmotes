@@ -1,3 +1,3 @@
 # best-discord
 
-C:\Users\*\AppData\Roaming\BetterDiscord\plugins
+C:\Users\\*\AppData\Roaming\BetterDiscord\plugins
