@@ -10,7 +10,7 @@ local magic = {
 local emotes = {}
 
 for obj in lfs.dir("emotes") do
-	if lfs.attributes("emotes\\"..obj, "mode") == "file" then
+	if lfs.attributes("emotes\\"..obj, "mode") == "file" and obj ~= ".steam-resize.bat" then
 		emotes[obj:match("^([^%.]+)"):gsub("%b{}", magic)] = obj
 	end
 end
