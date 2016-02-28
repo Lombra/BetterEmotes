@@ -28,7 +28,7 @@ BetterEmotes.prototype.load = function() {
 		}
 		console.log("[BetterEmotes] Preloading " +preloadImages.list.length+ " emote(s)")
 	}
-	$.getJSON("https://raw.githubusercontent.com/Lombra/BetterEmotes/master/emotes.json", function(list) {
+	$.getJSON("https://raw.githubusercontent.com/Lombra/BetterEmotes/master/emotes.json?t=" +(new Date().getTime()), function(list) {
 		BetterEmotes.emotelist = list
 		BetterEmotes.isReady = true
 		preloadImages()
