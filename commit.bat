@@ -1,3 +1,3 @@
 lua make-json.lua
 svn add -q emotes\*
-svn commit -m ""
+svn commit -m "Update emotes"
