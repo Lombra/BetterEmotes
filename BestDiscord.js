@@ -99,7 +99,7 @@ BetterEmotes.process = function() {
 			jtextnode.replaceWith(function() {
 				var html = this.nodeValue
 				$.each(BetterEmotes.emotelist, function(key, emote) {
-					html = html.replace(new RegExp("(^|\\s)" +key+ "(?=$|\\s)", 'g'), "$1<img class='emote s_emo' alt='"+key+"' src='" + "https://rawgit.com/Lombra/even-better-discord/master/emotes/" +emote+"'>")
+					html = html.replace(new RegExp("(^|\\s)" +key.replace(/[\^\(\)]/g, "\\$&")+ "(?=$|\\s)", 'g'), "$1<img class='emote s_emo' alt='"+key+"' src='" + "https://rawgit.com/Lombra/even-better-discord/master/emotes/" +emote+"'>")
 				})
 				return html
 			})
