@@ -1,3 +1,3 @@
-# best-discord
+# BetterEmotes
 
 C:\Users\\*\AppData\Roaming\BetterDiscord\plugins
