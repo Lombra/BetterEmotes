@@ -19,7 +19,7 @@ BetterEmotes.prototype.load = function() {
 					// for memory consumption reasons
 					preloadImages.list.splice(index, 1)
 					if (preloadImages.list.length == 0) {
-							console.log("[BetterEmotes] Emotes Preloaded")
+						console.log("[BetterEmotes] Emotes Preloaded")
 					}
 				}
 			}
@@ -90,6 +90,8 @@ BetterEmotes.emote_list_deconstruct = function() {
 	// $("#s_emo_qtab").remove()
 }
 
+var modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake"]
+
 BetterEmotes.process = function() {
 	$(".message-content > span:not(.s_emos_scanned), .comment .markup > span:not(.s_emos_scanned)").each(function() {
 		var textnode = $(this).contents().filter(function() {return this.nodeType === 3})
@@ -100,6 +102,9 @@ BetterEmotes.process = function() {
 				var html = this.nodeValue
 				$.each(BetterEmotes.emotelist, function(key, emote) {
 					html = html.replace(new RegExp("(^|\\s)" +key.replace(/[\^\\\(\)]/g, "\\$&")+ "(?=$|\\s)", 'g'), "$1<img class='emote s_emo' alt='"+key+"' src='" + "https://cdn.rawgit.com/Lombra/BetterEmotes/master/emotes/" +emote+"'>")
+					for (var i = 0; i < modifiers.length; i++) {
+						html = html.replace(new RegExp("(^|\\s)" +key.replace(/[\^\\\(\)]/g, "\\$&")+ ":(" +modifiers[i]+ ")(?=$|\\s)", 'g'), "$1<img class='emote emote$2 s_emo' alt='"+key+"' src='" + "https://cdn.rawgit.com/Lombra/BetterEmotes/master/emotes/" +emote+"'>")
+					}
 				})
 				return html
 			})
