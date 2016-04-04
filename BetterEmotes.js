@@ -90,7 +90,7 @@ BetterEmotes.emote_list_deconstruct = function() {
 	// $("#s_emo_qtab").remove()
 }
 
-var modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake"]
+var modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"]
 
 BetterEmotes.process = function() {
 	$(".message-content > span:not(.s_emos_scanned), .comment .markup > span:not(.s_emos_scanned)").each(function() {
@@ -132,13 +132,13 @@ BetterEmotes.prototype.getName = function() {
 };
 
 BetterEmotes.prototype.getDescription = function() {
-	return "Sends all your money to Lomble."
+	return "Custom emotes"
 };
 
 BetterEmotes.prototype.getVersion = function() {
-	return "Early Access FeelsGoodMan"
+	return "Early Access"
 };
 
 BetterEmotes.prototype.getAuthor = function() {
-	return "scamaz"
+	return "Lombra"
 };
