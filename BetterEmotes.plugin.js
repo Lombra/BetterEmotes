@@ -1,5 +1,4 @@
 //META{"name":"BetterEmotes"}*//
-
 function BetterEmotes() {}
 
 BetterEmotes.emotelist = {}
@@ -45,26 +44,50 @@ BetterEmotes.prototype.unload = function() {
 BetterEmotes.prototype.start = function() {
 	MutationObserver = window.MutationObserver || window.WebKitMutationObserver
 	var observer = new MutationObserver(function(mutations, observer) {
+		// if (BetterEmotes.isReady) BetterEmotes.process()
+	})
+	// var start_try = setInterval(function() {
+		// if (BetterEmotes.isReady) clearInterval(start_try)
+		// else return
+		
+		// var chat_tries = 0;
+		// var chat_retry = setInterval(function() {
+			// chat_tries++
+			// $(".chat").each (function() {
+				// console.log("[BetterEmotes] Chat listener attached after " +chat_tries+ " tries")
+				// clearInterval(chat_retry)
+				// observer.observe (this, {childList: true, characterData: true, attributes: false, subtree: true})
+			// })
+		// }, 100)
+		// BetterEmotes.emote_list_construct()
+		
+		// console.log("[BetterEmotes] Started.")
+	// }, 100)
+}
+
+BetterEmotes.prototype.observer = function() {
+	// MutationObserver = window.MutationObserver || window.WebKitMutationObserver
+	// var observer = new MutationObserver(function(mutations, observer) {
 		if (BetterEmotes.isReady) BetterEmotes.process()
 		// ...
-	})
-	var start_try = setInterval(function() {
-		if (BetterEmotes.isReady) clearInterval(start_try)
-		else return
+	// })
+	// var start_try = setInterval(function() {
+		// if (BetterEmotes.isReady) clearInterval(start_try)
+		// else return
 		
-		var chat_tries = 0;
-		var chat_retry = setInterval(function() {
-			chat_tries++
-			$(".chat").each (function() {
-				console.log("[BetterEmotes] Chat listener attached after " +chat_tries+ " tries")
-				clearInterval(chat_retry)
-				observer.observe (this, {childList: true, characterData: true, attributes: false, subtree: true})
-			})
-		}, 100)
-		BetterEmotes.emote_list_construct()
+		// var chat_tries = 0;
+		// var chat_retry = setInterval(function() {
+			// chat_tries++
+			// $(".chat").each (function() {
+				// console.log("[BetterEmotes] Chat listener attached after " +chat_tries+ " tries")
+				// clearInterval(chat_retry)
+				// observer.observe (this, {childList: true, characterData: true, attributes: false, subtree: true})
+			// })
+		// }, 100)
+		// BetterEmotes.emote_list_construct()
 		
-		console.log("[BetterEmotes] Started.")
-	}, 100)
+		// console.log("[BetterEmotes] Started.")
+	// }, 100)
 }
 
 BetterEmotes.emote_list_construct = function() {
@@ -93,7 +116,7 @@ BetterEmotes.emote_list_deconstruct = function() {
 var modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"]
 
 BetterEmotes.process = function() {
-	$(".message-content > span:not(.s_emos_scanned), .comment .markup > span:not(.s_emos_scanned)").each(function() {
+	$(".message-content > span:not(.s_emos_scanned), .comment .markup:not(.s_emos_scanned), .comment .markup > span:not(.s_emos_scanned)").each(function() {
 		var textnode = $(this).contents().filter(function() {return this.nodeType === 3})
 		var jtextnode = $(textnode)
 		if (!jtextnode.html()) {
