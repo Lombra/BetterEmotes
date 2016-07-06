@@ -5,6 +5,7 @@ local magic = {
 	["{col}"] = ":",
 	["{fsl}"] = "/",
 	["{bsl}"] = "\\",
+	["{pip}"] = "|",
 }
 
 local emotes = {}
