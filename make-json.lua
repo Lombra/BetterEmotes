@@ -10,11 +10,15 @@ local magic = {
 
 local emotes = {}
 
-for obj in lfs.dir("emotes") do
-	if lfs.attributes("emotes/"..obj, "mode") == "file" and obj ~= ".steam-resize.bat" then
+lfs.chdir("emotes")
+
+for obj in lfs.dir(".") do
+	if lfs.attributes(obj, "mode") == "file" and obj ~= ".steam-resize.bat" then
 		emotes[obj:match("^([^%.]+)"):gsub("%b{}", magic)] = obj
 	end
 end
+
+lfs.chdir("..")
 
 local file = io.open("emotes.json", "w")
 file:write(json.encode(emotes))
