@@ -1,4 +1,4 @@
 @echo off
-lua make-json.lua
-svn add -q emotes\*
+node make-json.js
+svn add -q --force emotes\*
 svn commit -m "Update emotes"
