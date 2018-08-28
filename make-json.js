@@ -20,4 +20,4 @@ for (file of fs.readdirSync("emotes")) {
 	}
 }
 
-fs.writeFile("emotes.json", JSON.stringify(emotes))
+fs.writeFileSync("emotes.json", JSON.stringify(emotes))
