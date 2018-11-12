@@ -29,10 +29,13 @@ BetterEmotes.prototype.load = function() {
 	}
 	$.getJSON("https://raw.githubusercontent.com/Lombra/BetterEmotes/master/emotes.json?t=" +(new Date().getTime()), function(list) {
 		BetterEmotes.emotelist = list
-		emoteModule.categories.splice(0, 0, "BetterEmotes")
 		settingsCookie["bda-es-betteremotes"] = true
-		bdEmoteSettingIDs.BetterEmotes = "bda-es-betteremotes"
 		bdEmotes.BetterEmotes = {}
+		let settingIDs = {BetterEmotes: "bda-es-betteremotes"}
+		for (let category in bdEmoteSettingIDs) {
+			settingIDs[category] = bdEmoteSettingIDs[category]
+		}
+		bdEmoteSettingIDs = settingIDs
 		for (let [emote, file] of Object.entries(list)) {
 			file = encodeURI(file)
 			bdEmotes.BetterEmotes[emote] = "https://cdn.rawgit.com/Lombra/BetterEmotes/master/emotes/" + file
