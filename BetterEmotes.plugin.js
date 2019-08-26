@@ -1,51 +1,45 @@
 //META{"name":"BetterEmotes"}*//
 function BetterEmotes() {}
 
-BetterEmotes.emotelist = {}
-BetterEmotes.isReady = false
-
 BetterEmotes.prototype.load = function() {
-	function preloadImages() {
-		if (!preloadImages.list) {
-			preloadImages.list = []
-		}
-		for (var emote in BetterEmotes.emotelist) {
-			var img = new Image()
-			img.onload = function() {
-				var index = preloadImages.list.indexOf(this);
-				if (index !== -1) {
-					// remove image from the array once it's loaded
-					// for memory consumption reasons
-					preloadImages.list.splice(index, 1)
-					if (preloadImages.list.length == 0) {
-						console.log("[BetterEmotes] Emotes Preloaded")
-					}
-				}
-			}
-			preloadImages.list.push(img)
-			img.src = BetterEmotes.emotelist[emote].url
-		}
-		console.log("[BetterEmotes] Preloading " +preloadImages.list.length+ " emote(s)")
+	settingsCookie["bda-es-betteremotes"] = true
+	bdEmotes.BetterEmotes = {}
+	let settingIDs = {BetterEmotes: "bda-es-betteremotes"}
+	for (let category in bdEmoteSettingIDs) {
+		settingIDs[category] = bdEmoteSettingIDs[category]
 	}
+	bdEmoteSettingIDs = settingIDs
+	
+	let channels = [
+		"40972890",
+		"26610234",
+		"7236692",
+		"58529158",
+		"23161357",
+		"92655587",
+		"58999722",
+	]
+	
+	let p = channels.map(e => fetch(`https://api.twitchemotes.com/api/v4/channels/${e}`).then(res => res.json()))
+	
 	$.getJSON("https://raw.githubusercontent.com/Lombra/BetterEmotes/master/emotes.json?t=" +(new Date().getTime()), function(list) {
-		BetterEmotes.emotelist = list
-		settingsCookie["bda-es-betteremotes"] = true
-		bdEmotes.BetterEmotes = {}
-		let settingIDs = {BetterEmotes: "bda-es-betteremotes"}
-		for (let category in bdEmoteSettingIDs) {
-			settingIDs[category] = bdEmoteSettingIDs[category]
-		}
-		bdEmoteSettingIDs = settingIDs
 		for (let [emote, file] of Object.entries(list)) {
 			file = encodeURI(file)
 			bdEmotes.BetterEmotes[emote] = "https://cdn.rawgit.com/Lombra/BetterEmotes/master/emotes/" + file
 		}
-		BetterEmotes.isReady = true
-		preloadImages()
+		
+		Promise.all(p)
+		 .then(channels => {
+			let emotes = [].concat(...(channels.map(e => e.emotes)))
+			emotes = emotes.filter(e => (!(e.code in bdEmotes.BetterEmotes)))
+			for (let emote of emotes) {
+				bdEmotes.BetterEmotes[emote.code] = `https://static-cdn.jtvnw.net/emoticons/v1/${emote.id}/1.0`
+			}
+		})
+		
 		console.log("[BetterEmotes] Ready")
 	}).fail(function(xhr, status, error) {
 		console.log("[BetterEmotes] Error Loading emotelist '" +status+ ":" +error+ "'. Using fallback")
-		BetterEmotes.isReady = true
 	})
 }
 
