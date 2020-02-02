@@ -32,9 +32,17 @@ BetterEmotes.prototype.load = function() {
 		 .then(channels => {
 			let emotes = [].concat(...(channels.map(e => e.emotes)))
 			emotes = emotes.filter(e => (!(e.code in bdEmotes.BetterEmotes)))
-			for (let emote of emotes) {
-				bdEmotes.BetterEmotes[emote.code] = `https://static-cdn.jtvnw.net/emoticons/v1/${emote.id}/1.0`
-			}
+			Promise.all(channels.map(e => fetch(`https://api.betterttv.net/2/channels/${e.channel_name}`).then(res => res.json())))
+			 .then(channels => {
+				let emotes2 = [].concat(...(channels.map(e => e.emotes)))
+				emotes2 = emotes2.filter(e => (!(e.code in bdEmotes.BetterEmotes)))
+				for (let emote of emotes2) {
+					bdEmotes.BetterEmotes[emote.code] = `https://cdn.betterttv.net/emote/${emote.id}/1x`
+				}
+				for (let emote of emotes) {
+					bdEmotes.BetterEmotes[emote.code] = `https://static-cdn.jtvnw.net/emoticons/v1/${emote.id}/1.0`
+				}
+			})
 		})
 		
 		console.log("[BetterEmotes] Ready")
