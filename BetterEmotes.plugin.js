@@ -24,10 +24,10 @@ BetterEmotes.prototype.load = async function() {
 	await Promise.all(channels.map(async e => {
 		let res = await fetch(`https://emotes.lombra.net/api/emotes/${e.id}`)
 		let emotesT = await res.json()
-		emotesT = emotesT.sort((a, b) => a.id - b.id)
-		emotes = emotes.concat(emotesT.filter(e => e.source == 'twitch' && !(e.active || e.pinned)))
-		emotes = emotes.concat(emotesT.filter(e => e.source == 'twitch' && e.active))
-		emotes = emotes.concat(emotesT.filter(e => e.source == 'twitch' && e.pinned))
+		emotesT = emotesT.filter(e => e.source == 'twitch').sort((a, b) => a.id - b.id)
+		emotes = emotes.concat(emotesT.filter(e => !(e.active || e.pinned)))
+		emotes = emotes.concat(emotesT.filter(e => e.active))
+		emotes = emotes.concat(emotesT.filter(e => e.pinned))
 	}))
 	emotes = emotes.filter(e => (!(e.code in bdEmotes.BetterEmotes)))
 	
