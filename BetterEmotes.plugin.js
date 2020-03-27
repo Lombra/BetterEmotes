@@ -24,22 +24,23 @@ BetterEmotes.prototype.load = async function() {
 	await Promise.all(channels.map(async e => {
 		let res = await fetch(`https://emotes.lombra.net/api/emotes/${e.id}`)
 		let emotesT = await res.json()
-		emotesT = emotesT.filter(e => e.source == 'twitch').sort((a, b) => a.id - b.id)
-		emotes = emotes.concat(emotesT.filter(e => !(e.active || e.pinned)))
-		emotes = emotes.concat(emotesT.filter(e => e.active))
-		emotes = emotes.concat(emotesT.filter(e => e.pinned))
+		
+		let emotesTw = emotesT.filter(e => e.source == 'twitch').sort((a, b) => a.id - b.id)
+		let emotesBt = emotesT.filter(e => e.source == 'bttv').sort((a, b) => a.id - b.id)
+		
+		emotes = emotes.concat(emotesBt.filter(e => !(e.active || e.pinned)))
+		emotes = emotes.concat(emotesTw.filter(e => !(e.active || e.pinned)))
+		
+		emotes = emotes.concat(emotesBt.filter(e => e.active))
+		emotes = emotes.concat(emotesTw.filter(e => e.active))
+		
+		emotes = emotes.concat(emotesBt.filter(e => e.pinned))
+		emotes = emotes.concat(emotesTw.filter(e => e.pinned))
 	}))
 	emotes = emotes.filter(e => (!(e.code in bdEmotes.BetterEmotes)))
 	
-	channels = await Promise.all(channels.map(e => fetch(`https://api.betterttv.net/2/channels/${e.name}`).then(res => res.json())))
-	let emotes2 = [].concat(...(channels.map(e => e.emotes)))
-	emotes2 = emotes2.filter(e => (!(e.code in bdEmotes.BetterEmotes)))
-	
-	for (let emote of emotes2) {
-		bdEmotes.BetterEmotes[emote.code] = `https://cdn.betterttv.net/emote/${emote.id}/1x`
-	}
 	for (let emote of emotes) {
-		bdEmotes.BetterEmotes[emote.code] = `https://emotes.lombra.net/emotes/twitch/1x/${emote.id}`
+		bdEmotes.BetterEmotes[emote.code] = `https://emotes.lombra.net/emotes/${emote.source}/1x/${emote.id}`
 	}
 	
 	console.log("[BetterEmotes] Ready")
