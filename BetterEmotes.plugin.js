@@ -2,14 +2,6 @@
 function BetterEmotes() {}
 
 BetterEmotes.prototype.load = async function() {
-	settingsCookie["bda-es-betteremotes"] = true
-	bdEmotes.BetterEmotes = {}
-	let settingIDs = {BetterEmotes: "bda-es-betteremotes"}
-	for (let category in bdEmoteSettingIDs) {
-		settingIDs[category] = bdEmoteSettingIDs[category]
-	}
-	bdEmoteSettingIDs = settingIDs
-	
 	let res = await fetch('https://emotes.lombra.net/api/channels')
 	let channels = await res.json()
 	
@@ -17,7 +9,7 @@ BetterEmotes.prototype.load = async function() {
 	let list = await res.json()
 	for (let [emote, file] of Object.entries(list)) {
 		file = encodeURI(file)
-		bdEmotes.BetterEmotes[emote] = "https://cdn.rawgit.com/Lombra/BetterEmotes/master/emotes/" + file
+		BdApi.emotes['TwitchSubscriber'][emote] = "https://cdn.rawgit.com/Lombra/BetterEmotes/master/emotes/" + file
 	}
 	
 	let emotes = []
@@ -37,10 +29,9 @@ BetterEmotes.prototype.load = async function() {
 		emotes = emotes.concat(emotesBt.filter(e => e.pinned))
 		emotes = emotes.concat(emotesTw.filter(e => e.pinned))
 	}))
-	emotes = emotes.filter(e => (!(e.code in bdEmotes.BetterEmotes)))
 	
 	for (let emote of emotes) {
-		bdEmotes.BetterEmotes[emote.code] = `https://emotes.lombra.net/emotes/${emote.source}/1x/${emote.id}`
+		BdApi.emotes['TwitchSubscriber'][emote.code] = `https://emotes.lombra.net/emotes/${emote.source}/1x/${emote.id}`
 	}
 	
 	console.log("[BetterEmotes] Ready")
