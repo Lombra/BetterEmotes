@@ -17,7 +17,7 @@ class BetterEmotes {
 		
 		res = await fetch('https://emotes.lombra.net/filter.json')
 		let filter = await res.json()
-		bemotes = bemotes.filter(e => !filter.whitelist.includes(e))
+		for (let emote of filter.whitelist) bemotes.splice(bemotes.findIndex(e => e == emote), 1)
 		bemotes.push(...filter.blacklist)
 		
 		let emotes = []
