@@ -5,6 +5,8 @@
 **/
 
 class BetterEmotes {
+	emotes = []
+	
 	getName() { return "BetterEmotes" }
 	getDescription() { return "Custom emotes" }
 	getVersion() { return "1.0" }
@@ -20,7 +22,6 @@ class BetterEmotes {
 		for (let emote of filter.whitelist) bemotes.splice(bemotes.findIndex(e => e == emote), 1)
 		bemotes.push(...filter.blacklist)
 		
-		let emotes = []
 		await Promise.all(channels.map(async e => {
 			let res = await fetch(`https://emotes.lombra.net/api/emotes/${e.id}`)
 			let emotesT = await res.json()
@@ -28,17 +29,21 @@ class BetterEmotes {
 			let emotesTw = emotesT.filter(e => e.source == 'twitch').sort((a, b) => a.id - b.id)
 			let emotesBt = emotesT.filter(e => e.source == 'bttv').sort((a, b) => a.id - b.id)
 			
-			emotes = emotes.concat(emotesBt.filter(e => !(e.active || e.pinned)))
-			emotes = emotes.concat(emotesTw.filter(e => !(e.active || e.pinned)))
+			this.emotes = this.emotes.concat(emotesBt.filter(e => !(e.active || e.pinned)))
+			this.emotes = this.emotes.concat(emotesTw.filter(e => !(e.active || e.pinned)))
 			
-			emotes = emotes.concat(emotesBt.filter(e => e.active))
-			emotes = emotes.concat(emotesTw.filter(e => e.active))
+			this.emotes = this.emotes.concat(emotesBt.filter(e => e.active))
+			this.emotes = this.emotes.concat(emotesTw.filter(e => e.active))
 			
-			emotes = emotes.concat(emotesBt.filter(e => e.pinned))
-			emotes = emotes.concat(emotesTw.filter(e => e.pinned))
+			this.emotes = this.emotes.concat(emotesBt.filter(e => e.pinned))
+			this.emotes = this.emotes.concat(emotesTw.filter(e => e.pinned))
 		}))
 		
-		for (let emote of emotes) {
+		res = await fetch(`https://emotes.lombra.net/api/emotes/VAULT`)
+		let emotesT = await res.json()
+		this.emotes = this.emotes.concat(emotesT)
+		
+		for (let emote of this.emotes) {
 			BdApi.emotes['TwitchSubscriber'][emote.code] = `https://emotes.lombra.net/emotes/${emote.source}/1x/${emote.id}`
 		}
 		
@@ -54,7 +59,9 @@ class BetterEmotes {
 
 	unload() { }
 
-	start() { }
+	async start() {
+		console.log("[BetterEmotes] Started.")
+	}
 
 	stop() {
 		console.log("[BetterEmotes] Stopped.")
