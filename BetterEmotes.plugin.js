@@ -2,22 +2,27 @@
  * @name BetterEmotes
  * @version 1.0.0
  * @description Custom emotes
+ * @author Lombra
+ * @source https://github.com/Lombra/BetterEmotes
+ * @updateUrl https://github.com/Lombra/BetterEmotes/raw/master/BetterEmotes.plugin.js
 **/
 
 class BetterEmotes {
 	emotes = []
 	
-	getName() { return "BetterEmotes" }
-	getDescription() { return "Custom emotes" }
-	getVersion() { return "1.0" }
-	getAuthor() { return "Lombra" }
+	async start() {
+		this.loadEmotes()
+		console.log("[BetterEmotes] Started")
+	}
 
-	async load() {
-		let res = await fetch('https://emotes.lombra.net/api/channels')
-		let channels = await res.json()
-		channels.push({ id: 0 })
+	stop() {
+		console.log("[BetterEmotes] Stopped")
+	}
+	
+	async loadEmotes() {
+		let channels = await this.getChannels()
 		
-		res = await fetch('https://emotes.lombra.net/filter.json')
+		let res = await fetch('https://emotes.lombra.net/filter.json')
 		let filter = await res.json()
 		for (let emote of filter.whitelist) bemotes.splice(bemotes.findIndex(e => e == emote), 1)
 		bemotes.push(...filter.blacklist)
@@ -25,23 +30,18 @@ class BetterEmotes {
 		await Promise.all(channels.map(async e => {
 			let res = await fetch(`https://emotes.lombra.net/api/emotes/${e.id}`)
 			let emotesT = await res.json()
-			
-			let emotesTw = emotesT.filter(e => e.source == 'twitch').sort((a, b) => a.id - b.id)
-			let emotesBt = emotesT.filter(e => e.source == 'bttv').sort((a, b) => a.id - b.id)
-			
-			this.emotes = this.emotes.concat(emotesBt.filter(e => !(e.active || e.pinned)))
-			this.emotes = this.emotes.concat(emotesTw.filter(e => !(e.active || e.pinned)))
-			
-			this.emotes = this.emotes.concat(emotesBt.filter(e => e.active))
-			this.emotes = this.emotes.concat(emotesTw.filter(e => e.active))
-			
-			this.emotes = this.emotes.concat(emotesBt.filter(e => e.pinned))
-			this.emotes = this.emotes.concat(emotesTw.filter(e => e.pinned))
+			this.emotes = this.emotes.concat(emotesT)
 		}))
 		
-		res = await fetch(`https://emotes.lombra.net/api/emotes/VAULT`)
-		let emotesT = await res.json()
-		this.emotes = this.emotes.concat(emotesT)
+		this.emotes = this.emotes.sort((a, b) => {
+			if (a.pinned != b.pinned)
+				return a.pinned - b.pinned
+			if (a.active != b.active)
+				return a.active - b.active
+			if (a.source != b.source)
+				return a.source < b.source
+			return a.id - b.id
+		})
 		
 		for (let emote of this.emotes) {
 			BdApi.emotes['TwitchSubscriber'][emote.code] = `https://emotes.lombra.net/emotes/${emote.source}/1x/${emote.id}`
@@ -53,21 +53,14 @@ class BetterEmotes {
 			file = encodeURI(file)
 			BdApi.emotes['TwitchSubscriber'][emote] = "https://cdn.rawgit.com/Lombra/BetterEmotes/master/emotes/" + file
 		}
-		
-		console.log("[BetterEmotes] Ready")
+	}
+	
+	async getChannels() {
+		let res = await fetch('https://emotes.lombra.net/api/channels')
+		let channels = await res.json()
+		channels.push({ id: 0 })
+		channels.push({ id: 'VAULT' })
+		return channels
 	}
 
-	unload() { }
-
-	async start() {
-		console.log("[BetterEmotes] Started.")
-	}
-
-	stop() {
-		console.log("[BetterEmotes] Stopped.")
-	}
-
-	update() {
-		console.log("[BetterEmotes] Updated")
-	}
 }
