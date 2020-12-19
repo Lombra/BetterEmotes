@@ -56,6 +56,7 @@ class BetterEmotes {
 	
 	async getChannels() {
 		let res = await fetch('https://emotes.lombra.net/api/channels')
+		if (!res.ok) console.error("Unable to get channels")
 		let channels = await res.json()
 		channels.push({ id: 0 })
 		channels.push({ id: 'VAULT' })
