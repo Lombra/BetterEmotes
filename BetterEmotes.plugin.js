@@ -27,19 +27,18 @@ class BetterEmotes {
 		for (let emote of filter.whitelist) bemotes.splice(bemotes.findIndex(e => e == emote), 1)
 		bemotes.push(...filter.blacklist)
 		
-		await Promise.all(channels.map(async e => {
+		let emotes = await Promise.all(channels.map(async e => {
 			let res = await fetch(`https://emotes.lombra.net/api/emotes/${e.id}`)
-			let emotesT = await res.json()
-			this.emotes = this.emotes.concat(emotesT)
+			return res.json()
 		}))
 		
-		this.emotes = this.emotes.sort((a, b) => {
+		this.emotes = this.emotes.concat(...emotes).sort((a, b) => {
 			if (a.pinned != b.pinned)
 				return a.pinned - b.pinned
 			if (a.active != b.active)
 				return a.active - b.active
 			if (a.source != b.source)
-				return a.source < b.source
+				return a.source.localeCompare(b.source)
 			return a.id - b.id
 		})
 		
@@ -62,5 +61,4 @@ class BetterEmotes {
 		channels.push({ id: 'VAULT' })
 		return channels
 	}
-
 }
